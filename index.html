@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Index AOS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet" />
+  <style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #222;
+  font-family: sans-serif;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100vh;
+}
+
+header {
+  height: 60px;
+  background-color: #222;
+  padding: 0 1%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+button {
+  padding: 0.8em 0.8em;
+  background-color: #ccc;
+  border: none;
+  border-radius: 0.4em;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+button:hover {
+  background-color: #eee;
+}
+
+.drag-toggle.active {
+  background-color: #88c;
+  color: white;
+}
+
+.dropdown-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #333;
+  color: white;
+  border: 1px solid #555;
+  padding: 1em;
+  border-radius: 0.4em;
+  display: none;
+  flex-direction: column;
+  gap: 0.5em;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 20;
+  white-space: nowrap;
+  min-width: max-content;
+}
+
+.dropdown-panel label {
+  display: flex;
+  align-items: center;
+  font-size: 0.9em;
+}
+
+.dropdown-panel input {
+  margin-right: 0.5em;
+}
+
+.command-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #882023;
+  color: white;
+  text-decoration: none;
+  font-size: 2em;
+  font-weight: bold;
+  height: 70px;
+  width: 98%;
+  margin: 5px auto;
+  padding: 0;
+  border: none;
+  border-radius: 1em;
+}
+.command-button:hover {
+  background-color: #666;
+}
+
+
+.section-top {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 1fr; /* important */
+  gap: 1.5% 1.5%;
+  padding: 1.5%;
+}
+.top-card-slot {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* aspect-ratio: 1200 / 1667; <-- à supprimer */
+}
+
+.top-card-slot img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2vh;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.2em;
+  color: #ccc;
+  border-top: 1px solid #444;
+  border-bottom: 1px solid #444;
+  background-color: #222;
+  margin: 0;
+}
+
+.section-rest {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5%;
+  padding: 1.5%;
+}
+
+.image-button {
+  width: 100%;
+  aspect-ratio: 1200 / 1667;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  touch-action: auto;
+}
+
+.image-button:hover {
+  transform: scale(1.03);
+}
+
+.image-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 0.6em;
+}
+
+.hidden {
+  display: none !important;
+}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <div style="position: relative;">
+        <button onclick="toggleDropdown('filterDropdown')">Composition</button>
+        <div id="filterDropdown" class="dropdown-panel"></div>
+      </div>
+      <div style="position: relative;">
+        <button onclick="toggleDropdown('battleDropdown')">Battle Formation</button>
+        <div id="battleDropdown" class="dropdown-panel">
+          <label><input type="radio" name="battle" data-key="battle-Eternal" data-img="icons/eternalstar.png">Eternal Starhost</label>
+          <label><input type="radio" name="battle" data-key="battle-Shadowstrike" data-img="icons/shadowstrike.png">Shadowstrike Starhost</label>
+          <label><input type="radio" name="battle" data-key="battle-Sunclaw" data-img="icons/sunclaw.png">Sunclaw Starhost</label>
+          <label><input type="radio" name="battle" data-key="battle-Thunderquake" data-img="icons/thunderquake.png">Thunderquake Starhost</label>
+        </div>
+      </div>
+      <div style="position: relative;">
+        <button onclick="toggleDropdown('spellDropdown')">Spell Lore</button>
+        <div id="spellDropdown" class="dropdown-panel">
+          <label><input type="radio" name="spell" data-key="spell-Celestial" data-img="icons/celestial.png">Celestial Manipulation</label>
+          <label><input type="radio" name="spell" data-key="spell-Primal" data-img="icons/primal.png">Primal Jungles</label>
+        </div>
+      </div>
+      <div style="position: relative;">
+        <button onclick="toggleDropdown('manifestationDropdown')">Manifestation</button>
+        <div id="manifestationDropdown" class="dropdown-panel">
+          <label><input type="radio" name="mani" data-key="mani-Krondspine" data-img="icons/krondspine.png">Krondspine</label>
+        </div>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="drag-toggle" id="dragToggleBtn">Déverrouiller</button>
+      <button class="reset-all" onclick="resetAllData()">Reset All</button>
+    </div>
+  </header>
+
+<a href="commands.html" class="command-button">Command Orders</a>
+
+  <div class="section-top">
+    <div class="top-card-slot" id="slot-battle"></div>
+    <div class="top-card-slot" id="slot-mani"></div>
+    <div class="top-card-slot"><img src="icons/artefact.png" alt="Fixed" /></div>
+    <div class="top-card-slot" id="slot-spell-1"></div>
+    <div class="top-card-slot" id="slot-spell-2"></div>
+    <div class="top-card-slot" id="slot-spell-3"></div>
+  </div>
+
+  <div class="separator">Armée</div>
+
+  <div class="section-rest" id="cardContainer">
+    <!-- Vignettes -->
+    <a class="image-button" href="slann.html" data-id="Slann Starmaster"><img src="boutons/slann.png" alt="Slann"></a>
+    <a class="image-button" href="oldblood-carno.html" data-id="Oldblood on Carnosaur"><img src="boutons/oldblood-carno.png" alt="Oldblood Carnosaur"></a>
+    <a class="image-button" href="aggradon-lancers.html" data-id="Aggradon Lancers"><img src="boutons/aggradon-lancers.png" alt="Aggradon Lancers"></a>
+    <a class="image-button" href="raptadon-chargers.html" data-id="Raptadon Chargers"><img src="boutons/raptadon-chargers.png" alt="Raptadon Chargers"></a>
+    <a class="image-button" href="raptadon-hunters.html" data-id="Raptadon Hunters"><img src="boutons/raptadon-hunters.png" alt="Raptadon Hunters"></a>
+    <a class="image-button" href="saurus-warriors.html" data-id="Saurus Warriors"><img src="boutons/saurus-warriors.png" alt="Saurus Warriors"></a>
+    <a class="image-button" href="krondspine.html" data-id="Krondspine"><img src="boutons/krondspine.png" alt="Krondspine"></a>
+    <a class="image-button" href="realmshaper.html" data-id="Realmshaper"><img src="boutons/realmshaper.png" alt="Realmshaper"></a>
+  </div>
+
+<script>
+  const allCards = Array.from(document.querySelectorAll('.image-button'));
+  const cardContainer = document.getElementById('cardContainer');
+  const dragToggleBtn = document.getElementById('dragToggleBtn');
+  const filterDropdown = document.getElementById('filterDropdown');
+  let sortableInstance = null;
+
+  function toggleDropdown(id) {
+    document.querySelectorAll('.dropdown-panel').forEach(drop => {
+      drop.style.display = (drop.id === id && drop.style.display !== 'flex') ? 'flex' : 'none';
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    const isButton = e.target.tagName === 'BUTTON';
+    const inDropdown = e.target.closest('.dropdown-panel');
+    if (!isButton && !inDropdown) {
+      document.querySelectorAll('.dropdown-panel').forEach(drop => drop.style.display = 'none');
+    }
+  });
+
+  const ids = allCards.map(card => card.dataset.id);
+  ids.forEach(id => {
+    const label = document.createElement('label');
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = getVisibility(id);
+    checkbox.onchange = () => {
+      setVisibility(id, checkbox.checked);
+      updateCardVisibility();
+    };
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(id));
+    filterDropdown.appendChild(label);
+  });
+
+  function setVisibility(id, visible) {
+    localStorage.setItem('visible-' + id, visible ? '1' : '0');
+  }
+
+  function getVisibility(id) {
+    const value = localStorage.getItem('visible-' + id);
+    return value === null ? true : value === '1';
+  }
+
+  function updateCardVisibility() {
+    allCards.forEach(card => {
+      const id = card.dataset.id;
+      card.classList.toggle('hidden', !getVisibility(id));
+    });
+  }
+
+  function resetAllData() {
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (
+        key.startsWith("buttonsState-") ||
+        key.startsWith("notesText-") ||
+        key.startsWith("visible-") ||
+        key === "cardOrder"
+      ) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+    location.reload();
+  }
+
+  function saveCardOrder() {
+    const order = Array.from(cardContainer.children).map(card => card.dataset.id);
+    localStorage.setItem("cardOrder", JSON.stringify(order));
+  }
+
+  function loadCardOrder() {
+    const order = JSON.parse(localStorage.getItem("cardOrder") || "[]");
+    if (order.length) {
+      const cardMap = Object.fromEntries(allCards.map(c => [c.dataset.id, c]));
+      order.forEach(id => {
+        const card = cardMap[id];
+        if (card) cardContainer.appendChild(card);
+      });
+    }
+  }
+
+  function toggleDrag() {
+    if (sortableInstance) {
+      sortableInstance.destroy();
+      sortableInstance = null;
+      dragToggleBtn.textContent = "Déverrouiller";
+      dragToggleBtn.classList.remove("active");
+    } else {
+      sortableInstance = new Sortable(cardContainer, {
+        animation: 150,
+        onEnd: saveCardOrder
+      });
+      dragToggleBtn.textContent = "Verrouiller";
+      dragToggleBtn.classList.add("active");
+    }
+  }
+
+  function updateTopCard(slotId, imgPath) {
+    const slot = document.getElementById(slotId);
+    slot.innerHTML = imgPath ? `<img src="${imgPath}" alt="">` : '';
+  }
+
+  document.querySelectorAll('.dropdown-panel input[type="radio"]').forEach(input => {
+    const key = input.dataset.key;
+    const img = input.dataset.img;
+    const slotMap = {
+      'battle': 'slot-battle',
+      'spell': ['slot-spell-1', 'slot-spell-2', 'slot-spell-3'],
+      'mani': 'slot-mani'
+    };
+    const group = input.name;
+
+    // Restauration depuis localStorage
+    if (localStorage.getItem(key) === "1") {
+      input.checked = true;
+      if (group === 'spell') {
+        slotMap[group].forEach((id, i) => updateTopCard(id, img.replace('.png', `${i + 1}.png`)));
+      } else {
+        updateTopCard(slotMap[group], img);
+      }
+    }
+
+    input.addEventListener("change", () => {
+      document.querySelectorAll(`input[name="${group}"]`).forEach(i => {
+        localStorage.setItem(i.dataset.key, "0");
+      });
+      localStorage.setItem(key, "1");
+
+      if (group === 'spell') {
+        slotMap[group].forEach(id => updateTopCard(id, null));
+        slotMap[group].forEach((id, i) => {
+          updateTopCard(id, img.replace('.png', `${i + 1}.png`));
+        });
+      } else {
+        updateTopCard(slotMap[group], img);
+      }
+    });
+  });
+
+  loadCardOrder();
+  updateCardVisibility();
+</script>
+
+</body>
+</html>
